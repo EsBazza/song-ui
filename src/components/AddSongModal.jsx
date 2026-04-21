@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Plus, Link as LinkIcon, Music, User, Disc, Tag, Loader2 } from 'lucide-react';
-import axios from 'axios';
+import { createSong } from '../api';
 
 const AddSongModal = ({ isOpen, onClose, onSongAdded }) => {
   const [loading, setLoading] = useState(false);
@@ -18,13 +18,12 @@ const AddSongModal = ({ isOpen, onClose, onSongAdded }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://song-api-ypz5.onrender.com/alonzo';
-      await axios.post(`${API_BASE_URL}/songs`, formData);
+      await createSong(formData);
       onSongAdded();
       onClose();
       setFormData({ title: '', artist: '', album: '', genre: '', url: '' });
     } catch (err) {
-      alert("Failed to add song. Please check your connection.");
+      alert("Failed to add track. Please check your connection.");
     } finally {
       setLoading(false);
     }
@@ -35,19 +34,16 @@ const AddSongModal = ({ isOpen, onClose, onSongAdded }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+      <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={onClose} />
       
-      <div className="relative w-full max-w-lg bg-zinc-900 border border-white/10 rounded-[2.5rem] p-10 shadow-2xl shadow-black overflow-hidden">
-        {/* Background Glow */}
-        <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/10 blur-[80px] rounded-full" />
-        
-        <div className="flex justify-between items-center mb-8">
+      <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl sm:p-8">
+        <div className="mb-6 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-black text-white tracking-tight italic">ADD NEW TRACK</h2>
-            <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest mt-1">Sync to SONG API Engine</p>
+            <h2 className="text-2xl font-semibold tracking-tight text-white">Add song</h2>
+            <p className="mt-1 text-sm text-slate-500">Enter song details below.</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full text-zinc-500 hover:text-white transition-colors">
+          <button onClick={onClose} className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-800 hover:text-white">
             <X size={24} />
           </button>
         </div>
@@ -55,12 +51,12 @@ const AddSongModal = ({ isOpen, onClose, onSongAdded }) => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 gap-6">
             <div className="relative">
-              <Music className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600" size={18} />
+              <Music className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
               <input
                 required
                 name="title"
-                placeholder="Song Title"
-                className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-white/20 transition-all placeholder:text-zinc-600 font-medium"
+                placeholder="Song title"
+                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-slate-600 transition-all placeholder:text-slate-600 font-medium"
                 onChange={handleChange}
                 value={formData.title}
               />
@@ -68,23 +64,23 @@ const AddSongModal = ({ isOpen, onClose, onSongAdded }) => {
 
             <div className="flex gap-4">
               <div className="relative flex-1">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600" size={18} />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
                 <input
                   required
                   name="artist"
                   placeholder="Artist"
-                  className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-white/20 transition-all placeholder:text-zinc-600 font-medium"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-slate-600 transition-all placeholder:text-slate-600 font-medium"
                   onChange={handleChange}
                   value={formData.artist}
                 />
               </div>
               <div className="relative flex-1">
-                <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600" size={18} />
+                <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
                 <input
                   required
                   name="genre"
                   placeholder="Genre"
-                  className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-white/20 transition-all placeholder:text-zinc-600 font-medium"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-slate-600 transition-all placeholder:text-slate-600 font-medium"
                   onChange={handleChange}
                   value={formData.genre}
                 />
@@ -92,23 +88,23 @@ const AddSongModal = ({ isOpen, onClose, onSongAdded }) => {
             </div>
 
             <div className="relative">
-              <Disc className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600" size={18} />
+              <Disc className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
               <input
                 name="album"
-                placeholder="Album Name"
-                className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-white/20 transition-all placeholder:text-zinc-600 font-medium"
+                placeholder="Album"
+                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-slate-600 transition-all placeholder:text-slate-600 font-medium"
                 onChange={handleChange}
                 value={formData.album}
               />
             </div>
 
             <div className="relative">
-              <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600" size={18} />
+              <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
               <input
                 required
                 name="url"
                 placeholder="YouTube URL"
-                className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-white/20 transition-all placeholder:text-zinc-600 font-medium"
+                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-slate-600 transition-all placeholder:text-slate-600 font-medium"
                 onChange={handleChange}
                 value={formData.url}
               />
@@ -118,10 +114,10 @@ const AddSongModal = ({ isOpen, onClose, onSongAdded }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-white text-black font-black py-5 rounded-2xl hover:bg-zinc-200 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 shadow-xl shadow-white/5 mt-4 disabled:opacity-50"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 font-semibold text-slate-950 transition-colors hover:bg-slate-200 disabled:opacity-50"
           >
             {loading ? <Loader2 className="animate-spin" size={20} /> : <Plus size={20} />}
-            {loading ? 'SYNCING...' : 'ADD TO LIBRARY'}
+            {loading ? 'Saving...' : 'Add song'}
           </button>
         </form>
       </div>
